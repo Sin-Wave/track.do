@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
+import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
 
 @EActivity
