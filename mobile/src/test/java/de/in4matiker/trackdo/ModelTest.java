@@ -4,9 +4,13 @@ import android.graphics.Color;
 
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.StringReader;
+
 import de.in4matiker.trackdo.model.DoContext;
 import de.in4matiker.trackdo.model.DoProject;
 import de.in4matiker.trackdo.model.DoTask;
+import de.in4matiker.trackdo.model.ProjectParser;
 
 public class ModelTest {
     @Test
@@ -16,7 +20,7 @@ public class ModelTest {
         context.createProject("Another project");
         DoProject project = context.createProject("Project");
         project.setColor(Color.RED);
-        project.setDescription("This is a project description\nIt contains newlines");
+        project.setDescription("This is a project description\nIt contains newlines\n\nThere are also empty lines\n");
         DoTask task = project.createTask("Task with subtasks");
         task.createChild("Subtask a");
         task.createChild("Subtask b");
@@ -26,6 +30,8 @@ public class ModelTest {
         }
         System.out.println(context.toString());
         System.out.println("---\n");
-        System.out.println(project.toString());
+        ProjectParser parser = new ProjectParser();
+        BufferedReader buffer = new BufferedReader(new StringReader(project.toString()));
+        System.out.println(parser.read(context, buffer).toString());
     }
 }

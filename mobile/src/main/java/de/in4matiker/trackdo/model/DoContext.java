@@ -36,6 +36,7 @@ public class DoContext extends DoItem {
         sb.append("\n\n");
         sb.append(getCreatedString());
         sb.append(getModifiedString());
+        sb.append(getRemindString());
         sb.append(getDeletedString());
         for (DoProject project : projectList) {
             sb.append("\n");

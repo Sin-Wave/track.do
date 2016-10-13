@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DoProject extends DoItem {
-    private String description;
+    static final String HEADER = "## ";
+    static final String TASKS = "### Tasks";
+    private String description = "";
     private final List<DoTask> taskList = new ArrayList<>();
     private DoContext context;
     private int color;
@@ -63,7 +65,7 @@ public class DoProject extends DoItem {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("## ");
+        StringBuilder sb = new StringBuilder(HEADER);
         sb.append(name);
         sb.append("\n");
         if (description != null && !description.isEmpty()) {
@@ -71,20 +73,23 @@ public class DoProject extends DoItem {
             sb.append(description);
             sb.append("\n");
         }
-        for (DoTask task : taskList) {
-            sb.append("\n");
-            sb.append(task.toString());
-        }
         if (!taskList.isEmpty()) {
+            sb.append("\n");
+            sb.append(TASKS);
+            sb.append("\n\n");
+        }
+        for (DoTask task : taskList) {
+            sb.append(task.toString());
             sb.append("\n");
         }
         sb.append("\n");
         sb.append(getCreatedString());
         sb.append(getModifiedString());
+        sb.append(getRemindString());
         sb.append(getDeletedString());
         if (color >>> 24 > 0) {
             sb.append(COMMENT);
-            sb.append("color:#");
+            sb.append(COLOR + "#");
             sb.append(Integer.toHexString(color));
             sb.append("\n");
         }
