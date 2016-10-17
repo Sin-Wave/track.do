@@ -71,16 +71,6 @@ public class DoProject extends DoItem {
         if (description != null && !description.isEmpty()) {
             sb.append("\n");
             sb.append(description);
-            sb.append("\n");
-        }
-        if (!taskList.isEmpty()) {
-            sb.append("\n");
-            sb.append(TASKS);
-            sb.append("\n\n");
-        }
-        for (DoTask task : taskList) {
-            sb.append(task.toString());
-            sb.append("\n");
         }
         sb.append("\n");
         sb.append(getCreatedString());
@@ -92,6 +82,14 @@ public class DoProject extends DoItem {
             sb.append(COLOR + "#");
             sb.append(Integer.toHexString(color));
             sb.append("\n");
+        }
+        sb.append("\n");
+        if (!taskList.isEmpty()) {
+            sb.append(TASKS);
+            sb.append("\n\n");
+        }
+        for (DoTask task : taskList) {
+            sb.append(task.toString());
         }
         return sb.toString();
     }

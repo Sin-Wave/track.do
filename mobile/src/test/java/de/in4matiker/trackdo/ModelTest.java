@@ -2,6 +2,7 @@ package de.in4matiker.trackdo;
 
 import android.graphics.Color;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -23,8 +24,9 @@ public class ModelTest {
         project.setDescription("This is a project description\nIt contains newlines\n\nThere are also empty lines\n");
         DoTask task = project.createTask("Task with subtasks");
         task.createChild("Subtask a");
-        task.createChild("Subtask b");
+        task.createChild("Subtask b").setRemind(new DateTime().plusHours(1));
         task.createChild("Subtask c");
+        task.setRemind(new DateTime().plusDays(1));
         for (int i = 1; i < 5; i++) {
             project.createTask("Task " + i);
         }

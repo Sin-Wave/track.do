@@ -45,8 +45,11 @@ public class DoTask extends DoItem {
         StringBuilder sb = new StringBuilder(getIndent());
         sb.append("* ");
         sb.append(name);
+        sb.append("\n");
+        if (hasRemind()) {
+            sb.append(getRemindString());
+        }
         for (DoTask task : subTaskList) {
-            sb.append("\n");
             sb.append(task.toString());
         }
         return sb.toString();

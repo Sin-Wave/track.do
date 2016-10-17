@@ -23,6 +23,18 @@ public abstract class DoItem {
         modified = new DateTime(created);
     }
 
+    public void setRemind(DateTime remind) {
+        this.remind = remind;
+    }
+
+    public DateTime getRemind() {
+        return remind;
+    }
+
+    public boolean hasRemind() {
+        return remind != null;
+    }
+
     void modify() {
         modified = new DateTime();
     }
