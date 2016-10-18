@@ -1,7 +1,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
+def PlayVersion = '9.6.1'
+def SupportVersion = '24.2.1'
 def AAVersion = '4.1.0'
+def JodaTimeVersion = '2.9.4.2'
+def DropboxVersion = '2.1.2'
+def OkHttpVersion = '2.7.5'
+def OkHttp3Version = '3.3.1'
 
 android {
     compileSdkVersion 24
@@ -10,9 +16,14 @@ android {
         applicationId "de.in4matiker.trackdo"
         minSdkVersion 21
         targetSdkVersion 24
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
     }
     buildTypes {
         release {
@@ -28,12 +39,15 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     wearApp project(':wear')
-    compile 'com.google.android.gms:play-services:9.6.1'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:support-v4:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile "com.google.android.gms:play-services:$PlayVersion"
+    compile "com.android.support:appcompat-v7:$SupportVersion"
+    compile "com.android.support:support-v4:$SupportVersion"
+    compile "com.android.support:design:$SupportVersion"
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
-    compile 'joda-time:joda-time:2.9.4'
+    compile "net.danlew:android.joda:$JodaTimeVersion"
+    compile "com.dropbox.core:dropbox-core-sdk:$DropboxVersion"
+    compile "com.squareup.okhttp:okhttp:$OkHttpVersion"
+    compile "com.squareup.okhttp3:okhttp:$OkHttp3Version";
     testCompile 'junit:junit:4.12'
 }
