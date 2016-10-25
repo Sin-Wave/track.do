@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 
-def PlayVersion = '9.6.1'
-def SupportVersion = '24.2.1'
+def PlayVersion = '9.8.0'
+def SupportVersion = '25.0.0'
 def AAVersion = '4.1.0'
 def JodaTimeVersion = '2.9.4.2'
 def DropboxVersion = '2.1.2'
@@ -10,12 +10,12 @@ def OkHttpVersion = '2.7.5'
 def OkHttp3Version = '3.3.1'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "24.0.3"
     defaultConfig {
         applicationId "de.in4matiker.trackdo"
         minSdkVersion 21
-        targetSdkVersion 24
+        targetSdkVersion 25
         multiDexEnabled true
         versionCode 1
         versionName "1.0"

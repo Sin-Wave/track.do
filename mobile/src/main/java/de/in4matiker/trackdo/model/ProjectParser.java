@@ -16,16 +16,18 @@ import java.util.regex.Pattern;
 public class ProjectParser {
     private final Pattern title;
     private final Pattern tasks;
+    private final Pattern intervals;
     private final Pattern emptyLine;
-    private final Pattern taskLine;
+    private final Pattern listLine;
     private final Pattern commentLine;
-    private State state = State.TITLE;
+    private State state = null;
 
     public ProjectParser() {
-        title = Pattern.compile("^" + Pattern.quote(DoProject.HEADER) + "\\s*(.+)$");
         emptyLine = Pattern.compile("^\\s*$");
-        tasks = Pattern.compile(Pattern.quote(DoProject.TASKS));
-        taskLine = Pattern.compile("^(" + Pattern.quote(DoTask.INDENT) + "?)\\*\\s*(.*)");
+        title = Pattern.compile("^" + Pattern.quote(DoProject.HEADER.trim()) + "\\s*(.+)$");
+        tasks = Pattern.compile(Pattern.quote(DoProject.TASKS.trim()));
+        intervals = Pattern.compile(Pattern.quote(DoProject.INTERVALS.trim()));
+        listLine = Pattern.compile("^(" + Pattern.quote(DoTask.INDENT) + "?)\\*\\s*(.*)");
         commentLine = Pattern.compile("^" + Pattern.quote(DoItem.COMMENT) + "(.*)");
     }
 
@@ -38,22 +40,23 @@ public class ProjectParser {
         int newLineCount = 0;
         StringBuilder description = new StringBuilder();
         while ((line = reader.readLine()) != null) {
-            if (state == State.TITLE) {
-                Matcher matcher = title.matcher(line);
-                if (matcher.matches()) {
-                    project = new DoProject(matcher.group(1), context);
-                    state = State.DESCRIPTION;
-                }
+            Matcher titleMatcher = title.matcher(line);
+            Matcher taskMatcher = tasks.matcher(line);
+            Matcher intervalMatcher = intervals.matcher(line);
+            if (state == null && titleMatcher.matches()) {
+                project = new DoProject(titleMatcher.group(1), context);
+                state = State.DESCRIPTION;
+            } else if (taskMatcher.matches()) {
+                state = State.TASKS;
+            } else if (intervalMatcher.matches()) {
+                state = State.INTERVALS;
             } else if (state == State.DESCRIPTION) {
                 Matcher emptyMatch = emptyLine.matcher(line);
-                Matcher taskMatch = tasks.matcher(line);
                 Matcher commentMatcher = commentLine.matcher(line);
                 if (emptyMatch.matches()) {
                     if (description.length() > 0) {
                         newLineCount++;
                     }
-                } else if (taskMatch.matches()) {
-                    state = State.TASK;
                 } else if (commentMatcher.matches()) {
                     String comment = commentMatcher.group(1);
                     if (comment.startsWith(DoItem.CREATED)) {
@@ -76,15 +79,15 @@ public class ProjectParser {
                     description.append(line);
                     description.append("\n");
                 }
-            } else if (state == State.TASK) {
-                Matcher taskMatcher = taskLine.matcher(line);
+            } else if (state == State.TASKS) {
+                Matcher lineMatcher = listLine.matcher(line);
                 Matcher commentMatcher = commentLine.matcher(line);
-                if (taskMatcher.matches()) {
-                    if (taskMatcher.group(1).isEmpty()) {
-                        task = project.createTask(taskMatcher.group(2));
+                if (lineMatcher.matches()) {
+                    if (lineMatcher.group(1).isEmpty()) {
+                        task = project.createTask(lineMatcher.group(2));
                         subTask = null;
                     } else if (task != null) {
-                        subTask = task.createChild(taskMatcher.group(2));
+                        subTask = task.createChild(lineMatcher.group(2));
                     }
                 } else if (commentMatcher.matches()) {
                     String comment = commentMatcher.group(1);
@@ -97,6 +100,13 @@ public class ProjectParser {
                         }
                     }
                 }
+            } else if (state == State.INTERVALS) {
+                Matcher lineMatcher = listLine.matcher(line);
+                if (lineMatcher.matches()) {
+                    if (lineMatcher.group(1).isEmpty()) {
+                        project.addInterval(lineMatcher.group(2));
+                    }
+                }
             }
         }
         if (project != null && description.length() > 0) {
@@ -106,8 +116,8 @@ public class ProjectParser {
     }
 
     private enum State {
-        TITLE,
         DESCRIPTION,
-        TASK,
+        TASKS,
+        INTERVALS,
     }
 }

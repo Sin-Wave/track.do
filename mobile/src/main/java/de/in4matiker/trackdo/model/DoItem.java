@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 
 public abstract class DoItem {
     static final String COMMENT = "[//]: #";
+    static final String LIST = "* ";
     static final String INDENT = "\t";
     static final String CREATED = "created:";
     static final String MODIFIED = "modified:";

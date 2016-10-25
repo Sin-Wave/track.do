@@ -2,20 +2,26 @@ package de.in4matiker.trackdo.model;
 
 import android.graphics.Color;
 
+import org.joda.time.Duration;
+import org.joda.time.Interval;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DoProject extends DoItem {
     static final String HEADER = "## ";
-    static final String TASKS = "### Tasks";
+    static final String TASKS = "\n### Tasks\n\n";
+    static final String INTERVALS = "\n### Time track\n\n";
     private String description = "";
     private final List<DoTask> taskList = new ArrayList<>();
     private DoContext context;
     private int color;
+    private List<Interval> intervals;
 
     public DoProject(String name, DoContext context) {
         super(name);
         this.context = context;
+        intervals = new ArrayList<>();
     }
 
     void setContext(DoContext context) {
@@ -63,6 +69,18 @@ public class DoProject extends DoItem {
         return task;
     }
 
+    void addInterval(String interval) {
+        intervals.add(Interval.parse(interval));
+    }
+
+    Duration getTime() {
+        Duration duration = new Duration(0);
+        for (Interval interval : intervals) {
+            duration = duration.plus(interval.toDuration());
+        }
+        return duration;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(HEADER);
@@ -83,14 +101,18 @@ public class DoProject extends DoItem {
             sb.append(Integer.toHexString(color));
             sb.append("\n");
         }
-        sb.append("\n");
-        if (!taskList.isEmpty()) {
-            sb.append(TASKS);
-            sb.append("\n\n");
-        }
+        sb.append(TASKS);
         for (DoTask task : taskList) {
             sb.append(task.toString());
         }
+        sb.append(INTERVALS);
+        for (Interval interval : intervals) {
+            sb.append(LIST);
+            sb.append(interval.toString());
+            sb.append("\n");
+        }
+
+        sb.append("\n");
         return sb.toString();
     }
 }

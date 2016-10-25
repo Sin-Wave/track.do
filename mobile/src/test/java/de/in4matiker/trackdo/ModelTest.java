@@ -20,6 +20,7 @@ public class ModelTest {
         context.createProject("Some project").setColor(0xffff00ff);
         context.createProject("Another project");
         DoProject project = context.createProject("Project");
+        project.setRemind(new DateTime().plusWeeks(1));
         project.setColor(Color.RED);
         project.setDescription("This is a project description\nIt contains newlines\n\nThere are also empty lines\n");
         DoTask task = project.createTask("Task with subtasks");
