@@ -46,6 +46,16 @@ public class DoTask extends DoItem {
         sb.append("* ");
         sb.append(name);
         sb.append("\n");
+        if (!description.isEmpty()) {
+            for (String line : description.split("\n")) {
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+                sb.append(getIndent());
+                sb.append(line.trim());
+                sb.append("\n");
+            }
+        }
         if (hasRemind()) {
             sb.append(getRemindString());
         }

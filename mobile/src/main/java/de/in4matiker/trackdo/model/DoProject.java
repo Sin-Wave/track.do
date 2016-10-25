@@ -12,11 +12,9 @@ public class DoProject extends DoItem {
     static final String HEADER = "## ";
     static final String TASKS = "\n### Tasks\n\n";
     static final String INTERVALS = "\n### Time track\n\n";
-    private String description = "";
     private final List<DoTask> taskList = new ArrayList<>();
-    private DoContext context;
-    private int color;
-    private List<Interval> intervals;
+    DoContext context;
+    private List<DoInterval> intervals;
 
     public DoProject(String name, DoContext context) {
         super(name);
@@ -29,12 +27,7 @@ public class DoProject extends DoItem {
         if (this.context != null) {
             this.context.removeProject(this);
         }
-        this.context = context;
-    }
-
-    public void setDescription(String description) {
-        modify();
-        this.description = description;
+        context.addProject(this);
     }
 
     public int getColor() {
@@ -58,10 +51,6 @@ public class DoProject extends DoItem {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
     public DoTask createTask(String name) {
         modify();
         DoTask task = new DoTask(name);
@@ -69,14 +58,18 @@ public class DoProject extends DoItem {
         return task;
     }
 
-    void addInterval(String interval) {
-        intervals.add(Interval.parse(interval));
+    public void addInterval(String interval, String description) {
+        intervals.add(new DoInterval(interval, description));
+    }
+
+    public void addInterval(Interval interval, String description) {
+        intervals.add(new DoInterval(interval, description));
     }
 
     Duration getTime() {
         Duration duration = new Duration(0);
-        for (Interval interval : intervals) {
-            duration = duration.plus(interval.toDuration());
+        for (DoInterval interval : intervals) {
+            duration = duration.plus(interval.getInterval().toDuration());
         }
         return duration;
     }
@@ -106,8 +99,7 @@ public class DoProject extends DoItem {
             sb.append(task.toString());
         }
         sb.append(INTERVALS);
-        for (Interval interval : intervals) {
-            sb.append(LIST);
+        for (DoInterval interval : intervals) {
             sb.append(interval.toString());
             sb.append("\n");
         }

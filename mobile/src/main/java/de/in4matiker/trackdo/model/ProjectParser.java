@@ -19,6 +19,7 @@ public class ProjectParser {
     private final Pattern intervals;
     private final Pattern emptyLine;
     private final Pattern listLine;
+    private final Pattern intervalLine;
     private final Pattern commentLine;
     private State state = null;
 
@@ -28,6 +29,7 @@ public class ProjectParser {
         tasks = Pattern.compile(Pattern.quote(DoProject.TASKS.trim()));
         intervals = Pattern.compile(Pattern.quote(DoProject.INTERVALS.trim()));
         listLine = Pattern.compile("^(" + Pattern.quote(DoTask.INDENT) + "?)\\*\\s*(.*)");
+        intervalLine = Pattern.compile("^\\*\\s*(\\S*)\\s*(.*)");
         commentLine = Pattern.compile("^" + Pattern.quote(DoItem.COMMENT) + "(.*)");
     }
 
@@ -99,13 +101,17 @@ public class ProjectParser {
                             task.setRemind(date);
                         }
                     }
+                } else {
+                    if (subTask != null) {
+                        subTask.setDescription(subTask.getDescription() + line + "\n");
+                    } else if (task != null) {
+                        task.setDescription(task.getDescription() + line + "\n");
+                    }
                 }
             } else if (state == State.INTERVALS) {
-                Matcher lineMatcher = listLine.matcher(line);
+                Matcher lineMatcher = intervalLine.matcher(line);
                 if (lineMatcher.matches()) {
-                    if (lineMatcher.group(1).isEmpty()) {
-                        project.addInterval(lineMatcher.group(2));
-                    }
+                    project.addInterval(lineMatcher.group(1), lineMatcher.group(2));
                 }
             }
         }

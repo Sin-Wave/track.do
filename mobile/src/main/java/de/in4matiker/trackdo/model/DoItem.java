@@ -12,11 +12,13 @@ public abstract class DoItem {
     static final String DELETED = "deleted:";
     static final String COLOR = "color:";
 
-    String name;
+    String name = "";
     DateTime created;
     DateTime modified;
     DateTime remind;
     DateTime deleted;
+    int color;
+    String description = "";
 
     DoItem(String name) {
         this.name = name;
@@ -62,5 +64,22 @@ public abstract class DoItem {
         return COMMENT + DELETED + deleted.toString() + "\n";
     }
 
+    public void setDescription(String description) {
+        modify();
+        if (description.endsWith("\n")) {
+            this.description = description;
+        } else {
+            this.description = description + "\n";
+        }
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public abstract String toString();
+
+    public String getName() {
+        return name;
+    }
 }
