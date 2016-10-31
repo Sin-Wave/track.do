@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DoContext extends DoItem {
+    static final String HEADER = "# ";
     private final List<DoProject> projectList = new ArrayList<>();
 
     public DoContext(String name) {
@@ -12,14 +13,18 @@ public class DoContext extends DoItem {
 
     public void removeProject(DoProject project) {
         modify();
-        project.setContext(null);
+        project.context = null;
         projectList.remove(project);
     }
 
     public void addProject(DoProject project) {
         modify();
-        project.setContext(this);
+        project.context = this;
         projectList.add(project);
+    }
+
+    public List<DoProject> getProjects() {
+        return projectList;
     }
 
     public DoProject createProject(String name) {
@@ -31,17 +36,12 @@ public class DoContext extends DoItem {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("# ");
-        sb.append(name);
-        sb.append("\n\n");
-        sb.append(getCreatedString());
-        sb.append(getModifiedString());
-        sb.append(getRemindString());
-        sb.append(getDeletedString());
-        for (DoProject project : projectList) {
-            sb.append("\n");
-            sb.append(project.toString());
-        }
-        return sb.toString();
+        return HEADER + name +
+                "\n\n" +
+                getDescription() +
+                getCreatedString() +
+                getModifiedString() +
+                getRemindString() +
+                getDeletedString();
     }
 }
